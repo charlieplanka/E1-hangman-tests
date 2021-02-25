@@ -23,13 +23,14 @@ REPETITIVE = 'REPETITIVE_LETTER'
 class Game:
     def __init__(self, word=''):
         self.ended = False
-        self._word = word
-        self._word_letters = set(word)
+        self._word = word.upper()
+        self._word_letters = set(self._word)
         self._guessed_letters = set()
         self._penalties = 0
         self._status = None
 
     def process_letter(self, letter):
+        letter = letter.upper()
         self._check_letter(letter)
         if self._status == GUESSED:
             self._guessed_letters.add(letter)
@@ -41,7 +42,6 @@ class Game:
         self._print_status_message()
         self.print_game_string()
 
-    # добавить нечувствительность к регистру
     def _check_letter(self, letter):
         if len(letter) != 1:
             self._status = NOT_SINGLE
