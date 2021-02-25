@@ -11,6 +11,14 @@ WORDS = [
     'coverage',
     ]
 
+# game statuses
+WIN = 'WIN'
+LOOSE = 'LOOSE'
+GUESSED = 'GUESSED'
+WRONG = 'WRONG_LETTER'
+NOT_SINGLE = 'NOT_SINGLE_LETTER'
+REPETITIVE = 'REPETITIVE_LETTER'
+
 
 class Game:
     def __init__(self, word=''):
@@ -23,54 +31,52 @@ class Game:
 
     def process_letter(self, letter):
         self._check_letter(letter)
-        if self._status == 'GUESSED':
+        if self._status == GUESSED:
             self._guessed_letters.add(letter)
             self._check_win()
-        elif self._status == 'WRONG_LETTER':
+        elif self._status == WRONG:
             self._penalties += 1
             self._check_penalties()
 
         self._print_status_message()
         self.print_game_string()
 
-    # нечувствительность к регистру
+    # добавить нечувствительность к регистру
     def _check_letter(self, letter):
         if len(letter) != 1:
-            self._status = 'NOT_SINGLE_LETTER'
+            self._status = NOT_SINGLE
         elif letter in self._guessed_letters:
-            self._status = 'REPETITIVE_LETTER'
+            self._status = REPETITIVE
         elif letter in self._word:
-            self._status = 'GUESSED'
+            self._status = GUESSED
         else:
-            self._status = 'WRONG_LETTER'
+            self._status = WRONG
 
     def _check_penalties(self):
         if self._penalties >= MAX_PENALTIES:
-            self._status = 'LOOSE'
+            self._status = LOOSE
             self.ended = True
-        else:
-            self._status = 'WRONG_LETTER'
 
     def _check_win(self):
         if self._guessed_letters == self._word_letters:  # возможно, есть лучший способ
-            self._status = 'WIN'
+            self._status = WIN
             self.ended = True
 
     def _print_status_message(self):
-        if self._status == 'WIN':
+        if self._status == WIN:
             print('Вы отгадали слово!')
-        elif self._status == 'LOOSE':
+        elif self._status == LOOSE:
             print(f'Вы исчерпали лимит попыток — {MAX_PENALTIES}. Вы проиграли!')
-        elif self._status == 'WRONG_LETTER':
+        elif self._status == WRONG:
             print('Извините, такой буквы нет')
             print(f'Осталось попыток: {MAX_PENALTIES - self._penalties}')
-        elif self._status == 'REPETITIVE_LETTER':
+        elif self._status == REPETITIVE:
             print('Эта буква уже открыта, попробуйте другую')
-        elif self._status == 'NOT_SINGLE_LETTER':
+        elif self._status == NOT_SINGLE:
             print('Пожалуйста, введите ровно одну букву')
 
     def print_game_string(self):
-        game_string = [letter if (letter in self._guessed_letters) else LETTER_SPACE for letter in self._word]  # подумать, как оптимизировать
+        game_string = [letter if (letter in self._guessed_letters) else LETTER_SPACE for letter in self._word]
         print(*game_string)
 
 
