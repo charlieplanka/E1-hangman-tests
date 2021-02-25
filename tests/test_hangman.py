@@ -5,14 +5,14 @@ from hangman import WIN, LOOSE, GUESSED, WRONG, NOT_SINGLE, REPETITIVE, MAX_PENA
 @pytest.mark.parametrize('letter', ['a', 'K', 'z'])
 def test_process_letter_guessed(word, letter):
     '''
-    Пользователь правильно угадывает букву
+    Пользователь угадывает букву
     '''
     word.process_letter(letter)
     assert word._status == GUESSED
     assert letter.upper() in word._guessed_letters
 
 
-@pytest.mark.parametrize('letter', ['o', 'X', 'p'])
+@pytest.mark.parametrize('letter', ['o', 'X', 'p', '5', '@'])
 def test_process_letter_wrong(word, letter):
     '''
     Пользователь вводит букву, которой нет в слове
@@ -54,13 +54,9 @@ def test_process_letter_win(game_win, letter):
 @pytest.mark.parametrize('letter', ['a', 'B'])
 def test_process_letter_loose(game_loose, letter):
     '''
-    Пользователь вводит неверную букву, исчерпывает попытки и проигрывает
+    Пользователь вводит неверную букву, исчерпывает лимит попыток и проигрывает
     '''
     game_loose.process_letter(letter)
     assert game_loose._status == LOOSE
     assert game_loose._penalties == MAX_PENALTIES
     assert game_loose.ended is True
-
-
-def test_check_letter_not_letter():
-    pass
